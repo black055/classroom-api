@@ -27,7 +27,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(cors({credentials: true, origin: 'http://localhost:3000'}));
+app.use(cors());
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
@@ -45,7 +45,8 @@ app.use(
     },
     store: MongoStore.create({
       mongoUrl:
-        "mongodb+srv://black055:kindayne123@cluster0.avzqd.mongodb.net/class-api?retryWrites=true&w=majority",ttl: 24 * 60 * 60
+        "mongodb+srv://black055:kindayne123@cluster0.avzqd.mongodb.net/class-api?retryWrites=true&w=majority",
+        ttl: 60 * 60 * 24 * 30
     }),
   })
 );
