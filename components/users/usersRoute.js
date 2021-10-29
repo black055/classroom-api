@@ -1,6 +1,7 @@
 const express = require('express');
 const bcrypt = require("bcrypt");
 const router = express.Router();
+const jwt = require('jsonwebtoken');
 
 const usersController = require('./usersController');
 
@@ -10,8 +11,16 @@ router.post('/add-user', async function(req, res, next) {
     const successful = await usersController.addUser({
         username: req.body.username,
         password: hashedPassword,
+        firstname: req.body.firstname,
+        lastname: req.body.lastname
     });
-    res.send(successful);
+    if (successful) {
+        const token = jwt.sign({ _id: successful._id }, 'secret');
+        return res.json({
+            token: token,
+            username: successful.username
+        });
+    } else res.send(successful);
 });
 
 router.post('/login', async function(req, res, next) {
@@ -20,28 +29,30 @@ router.post('/login', async function(req, res, next) {
     if (user) {
         check = await bcrypt.compareSync(req.body.password, user.password);
     }
-    if (check) req.session.user = user;
-    res.send(check);
+    if (check) {
+        const token = jwt.sign({ _id: user._id }, 'secret');
+        return res.json({
+            token: token,
+            username: user.username
+        });
+    }
+    else res.send(check);
 });
 
 router.post('/logout', async function(req, res, next) {
-    req.session.user = undefined;
-    req.session.destroy();
     res.redirect("/");
 });
 
 router.get('/logged-in', async function(req, res, next) {
-    console.log(req.session);
-    if (typeof req.session.user !== 'undefined') {
-        res.json({
-            loggedIn: true,
-            user: req.session.user
-        });
-    } else {
-        res.json({
-            loggedIn: false,
-            user: null
-        });
+    try {
+        const auth = jwt.verify(req.cookies.token, 'secret');
+        if (auth) {
+            return res.send(true);
+        } else {
+            return res.send(false);
+        }
+    } catch(err) {
+        return res.send(false);
     }
 });
 

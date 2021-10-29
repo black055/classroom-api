@@ -1,11 +1,9 @@
 const createError = require('http-errors');
 const express = require('express');
-var session = require('express-session');
 const path = require('path');
 const cookieParser = require('cookie-parser');
 const logger = require('morgan');
 const mongoose = require('mongoose');
-const MongoStore = require("connect-mongo");
 const cors = require('cors');
 
 mongoose.connect('mongodb+srv://black055:kindayne123@cluster0.avzqd.mongodb.net/class-api?retryWrites=true&w=majority', function (err) {
@@ -27,29 +25,13 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(cors());
+app.use(cors({credentials: true, origin: 'http://localhost:3001'}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
-app.use(
-  session({
-    secret: "secret",
-    saveUninitialized: false,
-    resave: false,
-    cookie: {
-      expires: 1000 * 60 * 60 * 24 * 30,
-      maxAge: 1000 * 60 * 60 * 24 * 30,
-      secure: false
-    },
-    store: MongoStore.create({
-      mongoUrl:
-        "mongodb+srv://black055:kindayne123@cluster0.avzqd.mongodb.net/class-api?retryWrites=true&w=majority",
-        ttl: 60 * 60 * 24 * 30
-    }),
-  })
-);
+
 app.use('/users', usersRouter);
 app.use('/courses', coursesRouter);
 

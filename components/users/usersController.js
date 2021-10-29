@@ -18,7 +18,7 @@ module.exports = {
               pass: user.pass
           });
           newUser.save();
-          return true;
+          return newUser;
       }
   }
 }
