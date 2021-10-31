@@ -5,20 +5,17 @@ const jwt = require('jsonwebtoken');
 
 const usersController = require('./usersController');
 
-router.post('/add-user', async function(req, res, next) {
-    const salt = bcrypt.genSaltSync(10);
-    const hashedPassword = await bcrypt.hash(req.body.password, salt);
+router.post('/register', async function(req, res, next) {
     const successful = await usersController.addUser({
         username: req.body.username,
-        password: hashedPassword,
+        password: req.body.password,
         firstname: req.body.firstname,
         lastname: req.body.lastname
     });
     if (successful) {
         const token = jwt.sign({ _id: successful._id }, 'secret');
         return res.json({
-            token: token,
-            username: successful.username
+            token: token
         });
     } else res.send(successful);
 });
@@ -32,8 +29,7 @@ router.post('/login', async function(req, res, next) {
     if (check) {
         const token = jwt.sign({ _id: user._id }, 'secret');
         return res.json({
-            token: token,
-            username: user.username
+            token: token
         });
     }
     else res.send(check);
@@ -46,8 +42,14 @@ router.post('/logout', async function(req, res, next) {
 router.get('/logged-in', async function(req, res, next) {
     try {
         const auth = jwt.verify(req.cookies.token, 'secret');
+        console.log(auth);
         if (auth) {
-            return res.send(true);
+            const user = await usersController.getUserByID(auth._id);
+            return res.json({
+                username: user.username,
+                lastname: user.lastname,
+                firstname: user.firstname
+            });
         } else {
             return res.send(false);
         }

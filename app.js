@@ -25,7 +25,12 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-app.use(cors({credentials: true, origin: 'http://localhost:3001'}));
+const whitelist = ['https://black055.github.io', 'http://localhost:3001']
+
+app.use(cors({
+    credentials: true,
+    origin: whitelist
+}));
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
