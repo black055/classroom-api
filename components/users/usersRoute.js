@@ -35,14 +35,9 @@ router.post('/login', async function(req, res, next) {
     else res.send(check);
 });
 
-router.post('/logout', async function(req, res, next) {
-    res.redirect("/");
-});
-
 router.get('/logged-in', async function(req, res, next) {
     try {
         const auth = jwt.verify(req.cookies.token, 'secret');
-        console.log(auth);
         if (auth) {
             const user = await usersController.getUserByID(auth._id);
             return res.json({

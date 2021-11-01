@@ -16,6 +16,18 @@ mongoose.connect('mongodb+srv://black055:kindayne123@cluster0.avzqd.mongodb.net/
   }
 );
 
+/*
+mongoose.connect('mongodb://localhost:27017/class-api', function (err) {
+    if (err) throw err;
+    console.log('Connect to database successful!');
+  }, {
+    useNewUrlParser: true,
+    useFindAndModify: false,
+    useUnifiedTopology: true
+  }
+);
+*/
+
 const usersRouter = require('./components/users/usersRoute');
 const coursesRouter = require('./components/courses/coursesRoute');
 
@@ -25,7 +37,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-const whitelist = ['https://black055.github.io', 'http://localhost:3001']
+const whitelist = ['https://black055-classroom-app.netlify.app/', 'http://localhost:3001']
 
 app.use(cors({
     credentials: true,
