@@ -37,7 +37,7 @@ const app = express();
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
 
-const whitelist = ['https://black055-classroom-app.netlify.app/', 'http://localhost:3001']
+const whitelist = ['https://black055-classroom-app.netlify.app', 'http://localhost:3001']
 
 app.use(cors({
     credentials: true,
