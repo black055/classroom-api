@@ -36,6 +36,7 @@ const app = express();
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'jade');
+app.set("trust proxy", 1);
 
 const whitelist = ['https://black055-classroom-app.netlify.app', 'http://localhost:3001']
 
